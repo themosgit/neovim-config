@@ -1,5 +1,4 @@
 return {
-
 	{
 		'nvim-telescope/telescope.nvim',
 		dependencies = {
@@ -19,12 +18,11 @@ return {
 			}
 
 			require("telescope").load_extension("fzf")
-			vim.keymap.set('n', '<space>ff', require('telescope.builtin').find_files)
+			vim.keymap.set('n', '<space>f', require('telescope.builtin').find_files)
 			vim.keymap.set('n', '<space>fh', require('telescope.builtin').help_tags)
-			vim.keymap.set('n', '<space>fs', function() 
+			vim.keymap.set('n', '<space>s', function() 
 				require('telescope.builtin').grep_string({ search = vim.fn.input(" Grep > ") });
 			end)
-
 		end
           },
 }
