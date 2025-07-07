@@ -13,12 +13,13 @@ return {
                     'clangd',
                     'rust_analyzer',
                     'ts_ls',
-		    'html',
-		    'cssls',
-		    'bashls',
-		    'fish_lsp',
+		            'html',
+		            'cssls',
+		            'bashls',
+		            'fish_lsp',
                     'jdtls',
                     'zls',
+		            'asm_lsp',
                 },
                 automatic_installation = true,
             })
@@ -168,6 +169,11 @@ return {
             lspconfig.zls.setup({
                 capabilities = capabilities,
             })
+
+            lspconfig.asm_lsp.setup({
+                capabilities = capabilities,
+            })
+
         end
     },
 }
