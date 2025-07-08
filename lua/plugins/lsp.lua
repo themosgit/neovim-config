@@ -19,6 +19,7 @@ return {
 		            'fish_lsp',
                     'jdtls',
                     'zls',
+                    'nil_ls',
 		            'asm_lsp',
                 },
                 automatic_installation = true,
@@ -171,6 +172,10 @@ return {
             })
 
             lspconfig.asm_lsp.setup({
+                capabilities = capabilities,
+            })
+
+            lspconfig.nil_ls.setup({
                 capabilities = capabilities,
             })
 
