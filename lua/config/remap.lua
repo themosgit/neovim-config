@@ -20,7 +20,7 @@ vim.keymap.set("n", "<space>d", "\"_d")
 vim.keymap.set("v", "<space>d", "\"_d")
 
 vim.keymap.set("n", "<C-f>", "<cmd>silent !tmux neww tmux-sessionizer<CR>")
-vim.keymap.set("n", "<leader>f", function()
+vim.keymap.set("n", "<leader>fo", function()
     vim.lsp.buf.format()
 end)
 
