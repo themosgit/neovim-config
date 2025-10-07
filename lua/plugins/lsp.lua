@@ -12,11 +12,9 @@ return {
                     'lua_ls',
                     'clangd',
                     'rust_analyzer',
-                    'ts_ls',
 		            'html',
 		            'cssls',
 		            'bashls',
-		            'fish_lsp',
                     'jdtls',
                     'zls',
                     'nil_ls',
@@ -133,10 +131,6 @@ return {
                 },
             })
 
-            lspconfig.ts_ls.setup({
-                capabilities = capabilities,
-            })
-
             lspconfig.html.setup({
                 capabilities = capabilities,
                 init_options = {
@@ -156,10 +150,6 @@ return {
             })
 
             lspconfig.bashls.setup({
-                capabilities = capabilities,
-            })
-
-            lspconfig.fish_lsp.setup({
                 capabilities = capabilities,
             })
 
