@@ -1,13 +1,5 @@
 local function setup_lsp()
     local capabilities = require('cmp_nvim_lsp').default_capabilities()
-    local lspconfig = require('lspconfig')
-
-    -- Suppress false positive warnings
-    local notify = vim.notify
-    vim.notify = function(msg, ...)
-        if msg:match("config not found") then return end
-        notify(msg, ...)
-    end
 
     -- LSP keybindings on attach
     vim.api.nvim_create_autocmd('LspAttach', {
@@ -34,57 +26,122 @@ local function setup_lsp()
         end,
     })
 
-    -- Server configurations
-    local servers = {
-        lua_ls = {
-            settings = {
-                Lua = {
-                    runtime = { version = 'LuaJIT' },
-                    diagnostics = { globals = { 'vim' } },
-                    workspace = {
-                        library = vim.api.nvim_get_runtime_file("", true),
-                        checkThirdParty = false,
-                    },
-                    telemetry = { enable = false },
+    -- Lua LSP
+    vim.lsp.config('lua_ls', {
+        cmd = { 'lua-language-server' },
+        filetypes = { 'lua' },
+        root_markers = { '.luarc.json', '.luarc.jsonc', '.luacheckrc', '.stylua.toml', 'stylua.toml', 'selene.toml', 'selene.yml', '.git' },
+        capabilities = capabilities,
+        settings = {
+            Lua = {
+                runtime = { version = 'LuaJIT' },
+                diagnostics = { globals = { 'vim' } },
+                workspace = {
+                    library = vim.api.nvim_get_runtime_file("", true),
+                    checkThirdParty = false,
                 },
+                telemetry = { enable = false },
             },
         },
-        clangd = {
-            cmd = { 'clangd', '--background-index' },
-        },
-        rust_analyzer = {
-            settings = {
-                ['rust-analyzer'] = {
-                    cargo = { allFeatures = true },
-                },
-            },
-        },
-        html = {
-            init_options = {
-                provideFormatter = true,
-                embeddedLanguages = { css = true, javascript = true },
-            },
-        },
-        cssls = {
-            init_options = { provideFormatter = true },
-        },
-        nil_ls = {
-            settings = {
-                ['nil'] = {
-                    formatting = { command = { "nixfmt" } },
-                },
-            },
-        },
-    }
+    })
 
-    for server, config in pairs(servers) do
-        lspconfig[server].setup(vim.tbl_extend("force", { capabilities = capabilities }, config))
-    end
+    -- Clangd
+    vim.lsp.config('clangd', {
+        cmd = { 'clangd', '--background-index' },
+        filetypes = { 'c', 'cpp', 'objc', 'objcpp', 'cuda', 'proto' },
+        root_markers = { '.clangd', '.clang-tidy', '.clang-format', 'compile_commands.json', 'compile_flags.txt', 'configure.ac', '.git' },
+        capabilities = capabilities,
+    })
 
-    -- simple servers (no custom config needed)
-    for _, server in ipairs({ 'bashls', 'jdtls', 'zls', 'asm_lsp' }) do
-        lspconfig[server].setup({ capabilities = capabilities })
-    end
+    -- Rust Analyzer
+    vim.lsp.config('rust_analyzer', {
+        cmd = { 'rust-analyzer' },
+        filetypes = { 'rust' },
+        root_markers = { 'Cargo.toml', 'rust-project.json', '.git' },
+        capabilities = capabilities,
+        settings = {
+            ['rust-analyzer'] = {
+                cargo = { allFeatures = true },
+            },
+        },
+    })
+
+    -- HTML
+    vim.lsp.config('html', {
+        cmd = { 'vscode-html-language-server', '--stdio' },
+        filetypes = { 'html', 'templ' },
+        root_markers = { 'package.json', '.git' },
+        capabilities = capabilities,
+        init_options = {
+            provideFormatter = true,
+            embeddedLanguages = { css = true, javascript = true },
+        },
+    })
+
+    -- CSS
+    vim.lsp.config('cssls', {
+        cmd = { 'vscode-css-language-server', '--stdio' },
+        filetypes = { 'css', 'scss', 'less' },
+        root_markers = { 'package.json', '.git' },
+        capabilities = capabilities,
+        init_options = { provideFormatter = true },
+    })
+
+    -- Nix
+    vim.lsp.config('nil_ls', {
+        cmd = { 'nil' },
+        filetypes = { 'nix' },
+        root_markers = { 'flake.nix', 'shell.nix', '.git' },
+        capabilities = capabilities,
+        settings = {
+            ['nil'] = {
+                formatting = { command = { "nixfmt" } },
+            },
+        },
+    })
+
+    -- Bash
+    vim.lsp.config('bashls', {
+        cmd = { 'bash-language-server', 'start' },
+        filetypes = { 'sh' },
+        root_markers = { '.git' },
+        capabilities = capabilities,
+    })
+
+    -- Java
+    vim.lsp.config('jdtls', {
+        cmd = { 'jdtls' },
+        filetypes = { 'java' },
+        root_markers = { 'pom.xml', 'build.gradle', '.git' },
+        capabilities = capabilities,
+    })
+
+    -- Zig
+    vim.lsp.config('zls', {
+        cmd = { 'zls' },
+        filetypes = { 'zig', 'zir' },
+        root_markers = { 'zls.json', 'build.zig', '.git' },
+        capabilities = capabilities,
+    })
+
+    -- Assembly
+    vim.lsp.config('asm_lsp', {
+        cmd = { 'asm-lsp' },
+        filetypes = { 'asm', 's', 'S' },
+        root_markers = { '.git' },
+        capabilities = capabilities,
+    })
+
+    -- OCaml
+    vim.lsp.config('ocamllsp', {
+        cmd = { 'ocamllsp' },
+        filetypes = { 'ocaml', 'ocaml.menhir', 'ocaml.interface', 'ocaml.ocamllex', 'reason', 'dune' },
+        root_markers = { '*.opam', 'esy.json', 'package.json', 'dune-project', 'dune-workspace', '.git' },
+        capabilities = capabilities,
+    })
+
+    -- Enable all configured LSPs
+    vim.lsp.enable({ 'lua_ls', 'clangd', 'rust_analyzer', 'html', 'cssls', 'nil_ls', 'bashls', 'jdtls', 'zls', 'asm_lsp', 'ocamllsp' })
 end
 
 return {
