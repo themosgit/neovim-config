@@ -1,5 +1,5 @@
 local function setup_lsp()
-    local capabilities = require('cmp_nvim_lsp').default_capabilities()
+    local capabilities = vim.lsp.protocol.make_client_capabilities()
 
     -- LSP keybindings on attach
     vim.api.nvim_create_autocmd('LspAttach', {
@@ -161,34 +161,9 @@ return {
         end,
     },
     {
-        'hrsh7th/nvim-cmp',
-        event = 'InsertEnter',
-        dependencies = { 'hrsh7th/cmp-nvim-lsp' },
-        config = function()
-            local cmp = require('cmp')
-            cmp.setup({
-                sources = { { name = 'nvim_lsp' } },
-                mapping = cmp.mapping.preset.insert({
-                    ['<C-Space>'] = cmp.mapping.complete(),
-                    ['<C-u>'] = cmp.mapping.scroll_docs(-4),
-                    ['<C-d>'] = cmp.mapping.scroll_docs(4),
-                    ['<CR>'] = cmp.mapping.confirm({ select = true }),
-                    ['<Tab>'] = cmp.mapping.select_next_item(),
-                    ['<S-Tab>'] = cmp.mapping.select_prev_item(),
-                }),
-                snippet = {
-                    expand = function(args)
-                        vim.snippet.expand(args.body)
-                    end,
-                },
-            })
-        end,
-    },
-    {
         'neovim/nvim-lspconfig',
         event = { 'BufReadPre', 'BufNewFile' },
         dependencies = {
-            'hrsh7th/cmp-nvim-lsp',
             'mason-org/mason.nvim',
             'mason-org/mason-lspconfig.nvim',
         },
