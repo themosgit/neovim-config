@@ -1,5 +1,9 @@
 local function setup_lsp()
     local capabilities = vim.lsp.protocol.make_client_capabilities()
+    local cmp_nvim_lsp = pcall(require, 'cmp_nvim_lsp')
+    if cmp_nvim_lsp then
+        capabilities = vim.tbl_deep_extend('force', capabilities, require('cmp_nvim_lsp').default_capabilities())
+    end
 
     -- LSP keybindings on attach
     vim.api.nvim_create_autocmd('LspAttach', {
